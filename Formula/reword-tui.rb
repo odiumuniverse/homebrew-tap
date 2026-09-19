@@ -2,7 +2,6 @@ class RewordTui < Formula
   desc "Spaced-repetition terminal companion for ReWord vocabulary"
   homepage "https://github.com/odiumuniverse/reword-tui"
   url "https://github.com/odiumuniverse/reword-tui/archive/refs/tags/v0.1.0.tar.gz"
-  version "0.1.0"
   sha256 "688e494e0e6bdcb6b7f51d37682ec050d3c0e028de7b5bcd931053c01df69491"
   license "MIT"
   head "https://github.com/odiumuniverse/reword-tui.git", branch: "master"
