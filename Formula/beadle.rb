@@ -2,7 +2,6 @@ class Beadle < Formula
   desc "Sync AI coding agent config from one private vault"
   homepage "https://github.com/odiumuniverse/beadle"
   url "https://github.com/odiumuniverse/beadle.git", tag: "v0.1.0"
-  version "0.1.0"
   license "MIT"
   head "https://github.com/odiumuniverse/beadle.git", branch: "master"
 
