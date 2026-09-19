@@ -15,9 +15,7 @@ cask "cuelight" do
 
   uninstall quit: "com.odiumuniverse.cuelight"
 
-  zap trash: [
-    "~/.config/cuelight",
-  ]
+  zap trash: "~/.config/cuelight"
 
   caveats <<~EOS
     cuelight lives in the menu bar (no Dock icon). Grant Input Monitoring when asked.
