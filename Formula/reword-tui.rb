@@ -10,20 +10,20 @@ class RewordTui < Formula
   depends_on "rust" => :build
 
   def install
-    system "cargo", "build", "--release", "--locked", "--manifest-path", "cli/Cargo.toml"
+    system "cargo", "install", *std_cargo_args(root: libexec, path: "cli")
     system "go", "build", *std_go_args(output: "reword-tui"), "./cmd/reword-tui"
 
-    libexec.install "reword-tui", "cli/target/release/rwcore"
+    libexec.install "reword-tui"
 
     (bin/"reword-tui").write <<~SH
       #!/bin/sh
-      exec "#{libexec}/reword-tui" --rwcore "#{libexec}/rwcore" "$@"
+      exec "#{libexec}/reword-tui" --rwcore "#{libexec}/bin/rwcore" "$@"
     SH
     (bin/"reword-tui").chmod 0755
   end
 
   test do
-    assert_predicate libexec/"rwcore", :executable?
+    assert_predicate libexec/"bin/rwcore", :executable?
     assert_predicate bin/"reword-tui", :executable?
   end
 end
