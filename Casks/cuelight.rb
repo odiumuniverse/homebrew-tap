@@ -7,7 +7,7 @@ cask "cuelight" do
   desc "Caps Lock LED indicator for coding agent sessions"
   homepage "https://github.com/odiumuniverse/cuelight"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "cuelight.app"
   binary "#{appdir}/cuelight.app/Contents/MacOS/cuelight", target: "cuelight"
