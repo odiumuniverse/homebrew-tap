@@ -1,6 +1,6 @@
 cask "cuelight" do
-  version "2.0.0-alpha"
-  sha256 "34e64f770e08da1381d7dd945c9d0f66802652b8f5c6412cb0788ebe7fdfe4c4"
+  version "2.0.1-alpha"
+  sha256 "96034e89249d8dda57d47fac76a2bdc585b3bd2d4bc50a3655446bc17ab6bae1"
 
   url "https://github.com/odiumuniverse/cuelight/releases/download/v#{version}/cuelight-#{version}.zip"
   name "cuelight"
