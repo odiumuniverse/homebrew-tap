@@ -27,3 +27,35 @@ jobs:
 
       - name: Audit
         run: brew audit --strict --tap=odiumuniverse/tap
+
+  smoke:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Link the tap
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/odiumuniverse/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+
+      - name: Trust the tap
+        run: brew trust odiumuniverse/tap
+
+      - name: Fetch the artifacts
+        run: |
+          brew fetch --retry odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
+          brew fetch --cask odiumuniverse/tap/cuelight
+
+      - name: Install and test the formulae
+        run: |
+          brew install odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
+          brew test odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
+
+      - name: Install and uninstall the cask
+        run: |
+          brew install --cask odiumuniverse/tap/cuelight
+          brew uninstall --cask odiumuniverse/tap/cuelight
