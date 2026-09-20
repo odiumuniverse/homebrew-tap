@@ -7,6 +7,11 @@ cask "cuelight" do
   desc "Caps Lock LED indicator for coding agent sessions"
   homepage "https://github.com/odiumuniverse/cuelight"
 
+  livecheck do
+    url "https://github.com/odiumuniverse/cuelight.git"
+    strategy :git
+  end
+
   depends_on macos: :ventura
 
   app "cuelight.app"
