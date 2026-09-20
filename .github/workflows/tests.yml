@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Link the tap
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/odiumuniverse/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+
+      - name: Style
+        run: brew style Casks Formula
+
+      - name: Audit
+        run: brew audit --strict --tap=odiumuniverse/tap
