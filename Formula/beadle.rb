@@ -1,8 +1,8 @@
 class Beadle < Formula
   desc "Sync AI coding agent config from one private vault"
   homepage "https://github.com/odiumuniverse/beadle"
-  url "https://github.com/odiumuniverse/beadle/releases/download/v0.3.1/beadle-0.3.1-darwin-universal.tar.gz"
-  sha256 "a6e629055ac4648fe3d6f5cc3d7d2da3f50686b72c6bcd08f7679642f79c0cd8"
+  url "https://github.com/odiumuniverse/beadle/releases/download/v0.3.2/beadle-0.3.2-darwin-universal.tar.gz"
+  sha256 "89c039ca01de00c2e9c40680a704f3ca71d1ee642a76c867e8284113bc9c0e4e"
   license "MIT"
 
   def install
