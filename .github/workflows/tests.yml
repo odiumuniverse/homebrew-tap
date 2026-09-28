@@ -2,14 +2,47 @@ name: tests
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
   pull_request:
 
 permissions:
   contents: read
 
 jobs:
-  audit:
+  sanitize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Mirrors beadle's sanitize guard: a formula or cask must never carry a
+      # secret-like literal. Real checksums are hex and cannot match any of these.
+      - name: formulae and casks are sanitized
+        run: |
+          if grep -rIiE "(sk-|ctx7|glpat-|ghp_|github_pat_|xoxb-|AKIA|Bearer[[:space:]]+[A-Za-z0-9]{6,}|BEGIN[A-Z ]*PRIVATE KEY)" Formula Casks; then
+            echo "sanitize guard: secret-like value in Formula/ or Casks/" >&2
+            exit 1
+          fi
+
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      formulae: ${{ steps.discover.outputs.formulae }}
+      casks: ${{ steps.discover.outputs.casks }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The audit and smoke matrices are derived from the tree, so a freshly bumped
+      # formula is exercised without editing this workflow, and a formula that does
+      # not exist yet is named nowhere.
+      - name: Discover the tap's formulae and casks
+        id: discover
+        run: |
+          formulae="$(find Formula -maxdepth 1 -name '*.rb' | sed 's|.*/||; s|\.rb$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          casks="$(find Casks -maxdepth 1 -name '*.rb' | sed 's|.*/||; s|\.rb$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          echo "formulae=${formulae}" >> "$GITHUB_OUTPUT"
+          echo "casks=${casks}" >> "$GITHUB_OUTPUT"
+
+  style:
     runs-on: macos-latest
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -25,10 +58,59 @@ jobs:
       - name: Style
         run: brew style Casks Formula
 
-      - name: Audit
-        run: brew audit --strict --tap=odiumuniverse/tap
+  audit-formula:
+    needs: list
+    if: needs.list.outputs.formulae != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        formula: ${{ fromJSON(needs.list.outputs.formulae) }}
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v7
 
-  smoke:
+      - name: Link the tap
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/odiumuniverse/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+
+      # Audited by name, not with `--tap`: Homebrew 7's `--tap` filter silently
+      # matches nothing for a tap that was only linked into Library/Taps.
+      - name: Audit ${{ matrix.formula }}
+        run: brew audit --strict "odiumuniverse/tap/${{ matrix.formula }}"
+
+  audit-cask:
+    needs: list
+    if: needs.list.outputs.casks != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        cask: ${{ fromJSON(needs.list.outputs.casks) }}
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Link the tap
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/odiumuniverse/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+
+      - name: Audit ${{ matrix.cask }}
+        run: brew audit --strict --cask "odiumuniverse/tap/${{ matrix.cask }}"
+
+  smoke-formula:
+    needs: list
+    if: needs.list.outputs.formulae != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        formula: ${{ fromJSON(needs.list.outputs.formulae) }}
     runs-on: macos-latest
     env:
       HOMEBREW_NO_AUTO_UPDATE: 1
@@ -45,17 +127,41 @@ jobs:
       - name: Trust the tap
         run: brew trust odiumuniverse/tap
 
-      - name: Fetch the artifacts
-        run: |
-          brew fetch --retry odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
-          brew fetch --cask odiumuniverse/tap/cuelight
+      - name: Fetch ${{ matrix.formula }}
+        run: brew fetch --retry "odiumuniverse/tap/${{ matrix.formula }}"
 
-      - name: Install and test the formulae
+      - name: Install and test ${{ matrix.formula }}
         run: |
-          brew install odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
-          brew test odiumuniverse/tap/beadle odiumuniverse/tap/reword-tui
+          brew install "odiumuniverse/tap/${{ matrix.formula }}"
+          brew test "odiumuniverse/tap/${{ matrix.formula }}"
 
-      - name: Install and uninstall the cask
+  smoke-cask:
+    needs: list
+    if: needs.list.outputs.casks != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        cask: ${{ fromJSON(needs.list.outputs.casks) }}
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Link the tap
         run: |
-          brew install --cask odiumuniverse/tap/cuelight
-          brew uninstall --cask odiumuniverse/tap/cuelight
+          tap_dir="$(brew --repository)/Library/Taps/odiumuniverse/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+
+      - name: Trust the tap
+        run: brew trust odiumuniverse/tap
+
+      - name: Fetch ${{ matrix.cask }}
+        run: brew fetch --retry --cask "odiumuniverse/tap/${{ matrix.cask }}"
+
+      - name: Install and uninstall ${{ matrix.cask }}
+        run: |
+          brew install --cask "odiumuniverse/tap/${{ matrix.cask }}"
+          brew uninstall --cask "odiumuniverse/tap/${{ matrix.cask }}"
