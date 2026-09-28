@@ -37,8 +37,16 @@ jobs:
       - name: Discover the tap's formulae and casks
         id: discover
         run: |
-          formulae="$(find Formula -maxdepth 1 -name '*.rb' | sed 's|.*/||; s|\.rb$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')"
-          casks="$(find Casks -maxdepth 1 -name '*.rb' | sed 's|.*/||; s|\.rb$||' | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')"
+          json_array() {
+            local item out=""
+            for item in "$@"; do
+              out="${out}${out:+,}\"${item}\""
+            done
+            printf '[%s]' "$out"
+          }
+
+          formulae="$(json_array $(find Formula -maxdepth 1 -name '*.rb' -exec basename {} .rb \; | sort))"
+          casks="$(json_array $(find Casks -maxdepth 1 -name '*.rb' -exec basename {} .rb \; | sort))"
           echo "formulae=${formulae}" >> "$GITHUB_OUTPUT"
           echo "casks=${casks}" >> "$GITHUB_OUTPUT"
 
