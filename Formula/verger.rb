@@ -1,7 +1,6 @@
 class Verger < Formula
   desc "Deliver agent packages to every coding agent host"
   homepage "https://github.com/odiumuniverse/verger"
-  version "0.1.1"
   license "MIT"
 
   on_macos do
