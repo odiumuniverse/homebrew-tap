@@ -13,25 +13,25 @@ class Verger < Formula
     # is exactly what Homebrew expects a universal artifact to look
     # like: one url, declared for both arches.
     on_intel do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-darwin-universal.tar.gz"
-      sha256 "0506f5363d75da7a23644888bacc4e8f36d4359f4de94ea5bbb8f2224740a31c"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.4/verger-0.1.4-darwin-universal.tar.gz"
+      sha256 "502e5cd19dd114066ed67fe7b3f5795f39d83b903235c5b962d727806606eb9d"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-darwin-universal.tar.gz"
-      sha256 "0506f5363d75da7a23644888bacc4e8f36d4359f4de94ea5bbb8f2224740a31c"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.4/verger-0.1.4-darwin-universal.tar.gz"
+      sha256 "502e5cd19dd114066ed67fe7b3f5795f39d83b903235c5b962d727806606eb9d"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-linux-amd64.tar.gz"
-      sha256 "5ca224372de8f2b5f9c3bc02eb960b40296b47a29e961cff254680a4b6698c3d"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.4/verger-0.1.4-linux-amd64.tar.gz"
+      sha256 "90f1bc81b7c1733bb069f1581687c9d4ffd30685c6b07e55166ef049385caa3e"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-linux-arm64.tar.gz"
-      sha256 "8c66024122bf37d0b3a49452b8052e2beeb0aa9da468f6a06c23a01064e373fd"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.4/verger-0.1.4-linux-arm64.tar.gz"
+      sha256 "babcbff311f673c5404b78b103be947ae11827dce928e4a21a454195f2ee3646"
     end
   end
 
