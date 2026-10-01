@@ -1,47 +1,58 @@
 class Verger < Formula
   desc "Deliver agent packages to every coding agent host"
   homepage "https://github.com/odiumuniverse/verger"
+  # brew audit flags an explicit version as redundant with the one
+  # it scans from the url; the tarball names carry it.
   license "MIT"
 
   on_macos do
+    # brew style rejects a bare url/sha256 directly inside
+    # on_macos/on_linux: the arch has to be stated, because
+    # "darwin-universal" and "linux-amd64" are not the same file.
+    # Both mac branches point at the same universal tarball, which
+    # is exactly what Homebrew expects a universal artifact to look
+    # like: one url, declared for both arches.
     on_intel do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.1/verger-0.1.1-darwin-universal.tar.gz"
-      sha256 "66fc4d7cb27a51a1c4f76a89159009239bcfc901f20b7fea230efe90b746ac65"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-darwin-universal.tar.gz"
+      sha256 "0506f5363d75da7a23644888bacc4e8f36d4359f4de94ea5bbb8f2224740a31c"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.1/verger-0.1.1-darwin-universal.tar.gz"
-      sha256 "66fc4d7cb27a51a1c4f76a89159009239bcfc901f20b7fea230efe90b746ac65"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-darwin-universal.tar.gz"
+      sha256 "0506f5363d75da7a23644888bacc4e8f36d4359f4de94ea5bbb8f2224740a31c"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.1/verger-0.1.1-linux-amd64.tar.gz"
-      sha256 "f3bf89289a902b9f0f5f9b7e601ee3acc7f459753a35f234d650125b38256ceb"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-linux-amd64.tar.gz"
+      sha256 "5ca224372de8f2b5f9c3bc02eb960b40296b47a29e961cff254680a4b6698c3d"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.1/verger-0.1.1-linux-arm64.tar.gz"
-      sha256 "e601eb4b973d30526d862fe5663b830292de2b050fe4f167fae76dfb06cc7ec2"
+      url "https://github.com/odiumuniverse/verger/releases/download/v0.1.2/verger-0.1.2-linux-arm64.tar.gz"
+      sha256 "8c66024122bf37d0b3a49452b8052e2beeb0aa9da468f6a06c23a01064e373fd"
     end
   end
 
   def install
     bin.install "verger"
-    # The man page ships inside the platform tarball, so a brew install gets
-    # it without a second download. Dir[] because gendocs may add subcommand
-    # pages later and they should land without another edit here.
+    # The man page ships inside the platform tarball, so a brew
+    # install gets it without a second download. Dir[] because
+    # gendocs may add subcommand pages later and they should land
+    # without another edit here.
     man1.install Dir["man/*.1"]
-    # No shells: list. The default is the set the binary actually generates,
-    # so adding a shell is a change in one place — here — instead of two.
+    # No shells: list. The default is the set the binary actually
+    # generates, so adding a shell is a change in one place — the
+    # binary — instead of two.
     generate_completions_from_executable(bin/"verger", "completion")
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/verger version")
-    # `brew test` is the only place a missing man1.install shows up as a
-    # failure rather than as a user typing `man verger` and getting nothing.
+    # `brew test` is the only place a missing man1.install shows up
+    # as a failure rather than as a user typing `man verger` and
+    # getting nothing.
     assert_path_exists man1/"verger.1"
   end
 end
