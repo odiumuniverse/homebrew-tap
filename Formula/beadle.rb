@@ -11,25 +11,25 @@ class Beadle < Formula
     # is exactly what Homebrew expects a universal artifact to look
     # like: one url, declared for both arches.
     on_intel do
-      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.0/beadle-0.5.0-darwin-universal.tar.gz"
-      sha256 "4135753ff3cab718296f0c002f271bfe0d5044c613e8dcca91a44ea8b18e0882"
+      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.1/beadle-0.5.1-darwin-universal.tar.gz"
+      sha256 "d6a8c85d01710bac8483a22eb93695476dbcf62c89aa9b5dfef65a6ba193be91"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.0/beadle-0.5.0-darwin-universal.tar.gz"
-      sha256 "4135753ff3cab718296f0c002f271bfe0d5044c613e8dcca91a44ea8b18e0882"
+      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.1/beadle-0.5.1-darwin-universal.tar.gz"
+      sha256 "d6a8c85d01710bac8483a22eb93695476dbcf62c89aa9b5dfef65a6ba193be91"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.0/beadle-0.5.0-linux-amd64.tar.gz"
-      sha256 "48102a99db99671dfdea84a6b4def6a08945221898b83be70a5efa08beb2d3ce"
+      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.1/beadle-0.5.1-linux-amd64.tar.gz"
+      sha256 "1fb2a1f1fc3c006d5cdb8a622b8c6f742d6ba3c51e7ffbc4b21c26f23ba48499"
     end
 
     on_arm do
-      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.0/beadle-0.5.0-linux-arm64.tar.gz"
-      sha256 "d08d60291590f5c5ecf36eba7629a996110239b0a683831cda38cc3a4703032c"
+      url "https://github.com/odiumuniverse/beadle/releases/download/v0.5.1/beadle-0.5.1-linux-arm64.tar.gz"
+      sha256 "34a7896fa78fbd18d2b05e0a1bf42eba401a29c3a5914c21abe539a99cdbcd36"
     end
   end
 
